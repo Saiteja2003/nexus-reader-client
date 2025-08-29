@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import styles from './AddFeedModal.module.css';
+import apiClient from '../api'; // Import the configured axios instance
 
 function AddFeedModal({ isOpen, onClose, onFeedAdded }) {
   const [url, setUrl] = useState('');
@@ -16,7 +17,7 @@ function AddFeedModal({ isOpen, onClose, onFeedAdded }) {
 
     try {
       // Make the POST request to our backend
-      await axios.post('http://localhost:4000/api/feeds', { url });
+      await apiClient.post('/api/feeds', { url });
       onFeedAdded(); // Tell the parent component to refresh the feed list
       onClose();     // Close the modal
     } catch (error) {

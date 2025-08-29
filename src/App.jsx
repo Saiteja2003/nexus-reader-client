@@ -4,6 +4,7 @@ import axios from 'axios';
 import Sidebar from './components/Sidebar';
 import ArticleList from './components/ArticleList';
 import ArticleView from './components/ArticleView';
+import apiClient from './api';
 
 function App() {
   const [feeds, setFeeds] = useState([]);
@@ -12,7 +13,7 @@ function App() {
 
   const fetchFeeds = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/feeds');
+      const response = await apiClient.get('/api/feeds');
       setFeeds(response.data);
     } catch (error) {
       console.error("Failed to fetch feeds:", error);

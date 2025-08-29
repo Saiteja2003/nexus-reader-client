@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import styles from './ArticleList.module.css';
+import apiClient from '../api';
 
 function ArticleList({ selectedFeed, selectedArticle, onSelectArticle }) {
   const [articles, setArticles] = useState([]);
@@ -17,7 +18,7 @@ function ArticleList({ selectedFeed, selectedArticle, onSelectArticle }) {
     const fetchArticles = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get('http://localhost:4000/api/fetch-articles', {
+        const response = await apiClient.get('/api/fetch-articles', {
           params: { url: selectedFeed.url }
         });
 

@@ -28,7 +28,7 @@
 }
 
 .articleCard:hover {
-  background-color: #EDF2F7; /* A very light, cool gray */
+  background-color: #edf2f7; /* A very light, cool gray */
 }
 
 .articleCard.active {

@@ -1,7 +1,7 @@
 // src/components/ArticleView.jsx
-import { Sparkles, ArrowUpRight } from 'lucide-react';
-import styles from './ArticleView.module.css';
-import { motion } from 'framer-motion';
+import { Sparkles, ArrowUpRight } from "lucide-react";
+import styles from "./ArticleView.module.css";
+import { motion } from "framer-motion";
 
 function ArticleView({ selectedArticle }) {
   // If no article is selected, show a placeholder message
@@ -15,36 +15,37 @@ function ArticleView({ selectedArticle }) {
 
   // A helper function to format the date
   const formatDate = (dateString) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   return (
     <motion.article
-    key={selectedArticle.guid || selectedArticle.link} // Add key to re-trigger animation
+      key={selectedArticle.guid || selectedArticle.link} // Add key to re-trigger animation
       className={styles.articleView}
       initial={{ opacity: 0, y: 20 }} // Start invisible and slightly down
-      animate={{ opacity: 1, y: 0 }}   // Animate to fully visible and original position
+      animate={{ opacity: 1, y: 0 }} // Animate to fully visible and original position
       transition={{ duration: 0.5 }} // Control the speed of the animation
-      >
+    >
       <header className={styles.header}>
         <div>
           <p className={styles.meta}>
-            {selectedArticle.creator || 'Source'} · {formatDate(selectedArticle.pubDate)}
+            {selectedArticle.creator || "Source"} ·{" "}
+            {formatDate(selectedArticle.pubDate)}
           </p>
           <h1 className={styles.title}>{selectedArticle.title}</h1>
         </div>
-        
+
         <div className={styles.actions}>
-          <a 
-            href={selectedArticle.link} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className={styles.actionButton} 
+          <a
+            href={selectedArticle.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.actionButton}
             title="View Original"
           >
             <ArrowUpRight size={20} />
@@ -61,9 +62,11 @@ function ArticleView({ selectedArticle }) {
         content from trusted RSS feeds. We would NEVER use this for user-submitted content
         as it could lead to security vulnerabilities (XSS attacks).
       */}
-      <div 
+      <div
         className={styles.content}
-        dangerouslySetInnerHTML={{ __html: selectedArticle.content || selectedArticle.contentSnippet }}
+        dangerouslySetInnerHTML={{
+          __html: selectedArticle.content || selectedArticle.contentSnippet,
+        }}
       />
     </motion.article>
   );

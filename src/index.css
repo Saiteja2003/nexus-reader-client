@@ -1,23 +1,23 @@
 /* src/index.css */
 /* --- 1. FONT IMPORT --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600&display=swap');
-@import 'react-loading-skeleton/dist/skeleton.css';
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600&display=swap");
+@import "react-loading-skeleton/dist/skeleton.css";
 /* --- 2. DESIGN SYSTEM (CSS VARIABLES) --- */
 /* Palette 1: Academic Ink */
 /* Palette 2: Nordic Slate */
 :root {
   /* Color Palette - NEW GREEN THEME */
-  --color-background: #F8F9F8;     /* A slightly green-tinted off-white */
-  --color-surface: #FFFFFF;
-  --color-border: #E8EAE8;
+  --color-background: #f8f9f8; /* A slightly green-tinted off-white */
+  --color-surface: #ffffff;
+  --color-border: #e8eae8;
   --color-text-primary: #121212;
-  --color-text-secondary: #5A5A5A;
-  --color-accent: #386641;         /* A sophisticated, earthy sage green */
-  --color-accent-hover: #2A4C30;   /* A darker shade for hover states */
+  --color-text-secondary: #5a5a5a;
+  --color-accent: #386641; /* A sophisticated, earthy sage green */
+  --color-accent-hover: #2a4c30; /* A darker shade for hover states */
 
   /* Typography */
-  --font-sans: 'Inter', sans-serif;
-  --font-serif: 'Lora', serif;
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Lora", serif;
   /* Spacing & Radii */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -45,7 +45,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-serif);
   font-weight: 600;
 }

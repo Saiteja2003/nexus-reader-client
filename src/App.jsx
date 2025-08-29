@@ -1,10 +1,10 @@
 // src/App.jsx
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import Sidebar from './components/Sidebar';
-import ArticleList from './components/ArticleList';
-import ArticleView from './components/ArticleView';
-import apiClient from './api';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Sidebar from "./components/Sidebar";
+import ArticleList from "./components/ArticleList";
+import ArticleView from "./components/ArticleView";
+import apiClient from "./api";
 
 function App() {
   const [feeds, setFeeds] = useState([]);
@@ -13,7 +13,7 @@ function App() {
 
   const fetchFeeds = async () => {
     try {
-      const response = await apiClient.get('/api/feeds');
+      const response = await apiClient.get("/api/feeds");
       setFeeds(response.data);
     } catch (error) {
       console.error("Failed to fetch feeds:", error);
@@ -46,17 +46,17 @@ function App() {
 
   return (
     <div className="app-container">
-      <Sidebar 
-        feeds={feeds} 
+      <Sidebar
+        feeds={feeds}
         selectedFeed={selectedFeed}
-        onSelectFeed={handleSelectFeed} 
-        onFeedAdded={fetchFeeds} 
+        onSelectFeed={handleSelectFeed}
+        onFeedAdded={fetchFeeds}
         onDeleteFeed={handleDeleteFeed}
       />
-      <ArticleList 
+      <ArticleList
         selectedFeed={selectedFeed}
-        selectedArticle={selectedArticle}  // 3. Pass state and handler down
-        onSelectArticle={handleSelectArticle} 
+        selectedArticle={selectedArticle} // 3. Pass state and handler down
+        onSelectArticle={handleSelectArticle}
       />
       <ArticleView selectedArticle={selectedArticle} />
     </div>

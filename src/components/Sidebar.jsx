@@ -1,9 +1,15 @@
-import { useState } from 'react';
-import { Folder, Rss, Star, PlusCircle, Trash2 } from 'lucide-react';
-import AddFeedModal from './AddFeedModal';
-import styles from './Sidebar.module.css';
+import { useState } from "react";
+import { Folder, Rss, Star, PlusCircle, Trash2 } from "lucide-react";
+import AddFeedModal from "./AddFeedModal";
+import styles from "./Sidebar.module.css";
 
-function Sidebar({ feeds, selectedFeed, onSelectFeed, onFeedAdded, onDeleteFeed }) {
+function Sidebar({
+  feeds,
+  selectedFeed,
+  onSelectFeed,
+  onFeedAdded,
+  onDeleteFeed,
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDelete = (e, feedId) => {
@@ -32,24 +38,38 @@ function Sidebar({ feeds, selectedFeed, onSelectFeed, onFeedAdded, onDeleteFeed 
         <div className={styles.navSection}>
           <div className={styles.navHeader}>
             <h3 className={styles.navTitle}>Your Feeds</h3>
-            <button className={styles.addButton} onClick={() => setIsModalOpen(true)} title="Add new feed">
+            <button
+              className={styles.addButton}
+              onClick={() => setIsModalOpen(true)}
+              title="Add new feed"
+            >
               <PlusCircle size={20} />
             </button>
           </div>
-          
-          {feeds.map(feed => (
-            <div 
-              key={feed._id} 
+
+          {feeds.map((feed) => (
+            <div
+              key={feed._id}
               onClick={() => onSelectFeed(feed)}
-              className={`${styles.navItem} ${selectedFeed?._id === feed._id ? styles.active : ''}`}
+              className={`${styles.navItem} ${
+                selectedFeed?._id === feed._id ? styles.active : ""
+              }`}
             >
               {feed.favicon ? (
-                <img src={feed.favicon} alt={`${feed.title} favicon`} className={styles.favicon} />
+                <img
+                  src={feed.favicon}
+                  alt={`${feed.title} favicon`}
+                  className={styles.favicon}
+                />
               ) : (
                 <Folder />
               )}
               <span className={styles.feedTitle}>{feed.title}</span>
-              <button className={styles.deleteButton} onClick={(e) => handleDelete(e, feed._id)} title="Delete feed">
+              <button
+                className={styles.deleteButton}
+                onClick={(e) => handleDelete(e, feed._id)}
+                title="Delete feed"
+              >
                 <Trash2 size={16} />
               </button>
             </div>
@@ -57,8 +77,8 @@ function Sidebar({ feeds, selectedFeed, onSelectFeed, onFeedAdded, onDeleteFeed 
         </div>
       </div>
 
-      <AddFeedModal 
-        isOpen={isModalOpen} 
+      <AddFeedModal
+        isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onFeedAdded={onFeedAdded}
       />

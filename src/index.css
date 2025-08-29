@@ -1,68 +1,59 @@
+/* src/index.css */
+/* --- 1. FONT IMPORT --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600&display=swap');
+@import 'react-loading-skeleton/dist/skeleton.css';
+/* --- 2. DESIGN SYSTEM (CSS VARIABLES) --- */
+/* Palette 1: Academic Ink */
+/* Palette 2: Nordic Slate */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Color Palette - NEW GREEN THEME */
+  --color-background: #F8F9F8;     /* A slightly green-tinted off-white */
+  --color-surface: #FFFFFF;
+  --color-border: #E8EAE8;
+  --color-text-primary: #121212;
+  --color-text-secondary: #5A5A5A;
+  --color-accent: #386641;         /* A sophisticated, earthy sage green */
+  --color-accent-hover: #2A4C30;   /* A darker shade for hover states */
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Typography */
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Lora', serif;
+  /* Spacing & Radii */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --border-radius: 8px;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* --- 3. GLOBAL STYLES & RESETS --- */
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* --- 4. MAIN LAYOUT GRID --- */
+.app-container {
+  display: grid;
+  grid-template-columns: 280px 380px 1fr; /* Slightly wider columns */
+  height: 100vh;
+  overflow: hidden; /* Prevent body-level scrolling */
 }

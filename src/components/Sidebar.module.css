@@ -1,0 +1,118 @@
+.sidebar {
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg);
+  gap: var(--spacing-xl);
+  overflow-y: auto;
+}
+
+.header {
+  font-family: var(--font-heading, var(--font-serif));
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.navSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.navHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--spacing-md);
+}
+
+.navTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.addButton {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.addButton:hover {
+  opacity: 1;
+  color: var(--color-accent);
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navItem:hover {
+  background-color: var(--color-background);
+}
+
+.navItem.active {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.navItem.active:hover .deleteButton,
+.navItem.active .deleteButton:hover {
+  color: white;
+}
+
+.favicon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.feedTitle {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.navItem:hover .deleteButton {
+  opacity: 0.6;
+}
+
+.deleteButton:hover {
+  opacity: 1;
+  color: #E53E3E;
+}
+
+.navItem svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}

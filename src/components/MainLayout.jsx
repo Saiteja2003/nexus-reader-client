@@ -1,12 +1,13 @@
 // src/components/MainLayout.jsx
 import { useState, useEffect } from "react";
 import apiClient from "../api";
+import { useAuth } from "../context/AuthContext"; // 1. Import useAuth
 import Sidebar from "./Sidebar";
 import ArticleList from "./ArticleList";
 import ArticleView from "./ArticleView";
 
 function MainLayout() {
-  // All the state and logic that was in App.jsx now lives here
+  const { user } = useAuth(); // 2. Get the current user from our AuthContext
   const [feeds, setFeeds] = useState([]);
   const [selectedFeed, setSelectedFeed] = useState(null);
   const [selectedArticle, setSelectedArticle] = useState(null);
@@ -17,12 +18,18 @@ function MainLayout() {
       setFeeds(response.data);
     } catch (error) {
       console.error("Failed to fetch feeds:", error);
+      // If fetching fails (e.g., bad token), clear the feeds
+      setFeeds([]);
     }
   };
 
+  // 3. This useEffect will now ONLY run when the `user` object changes
   useEffect(() => {
-    fetchFeeds();
-  }, []);
+    // Only fetch feeds if a user is confirmed to be logged in
+    if (user) {
+      fetchFeeds();
+    }
+  }, [user]);
 
   const handleDeleteFeed = async (id) => {
     try {

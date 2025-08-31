@@ -16,7 +16,7 @@ function LoginPage() {
 
   const handleDevLogin = () => {
     // Use the credentials for a test user you've already registered
-    login("test@gmail.com", "Saiteja@1");
+    login("saitejachalla98@gmail.com", "Saiteja@1");
   };
 
   return (

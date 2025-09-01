@@ -16,6 +16,7 @@ function MainLayout() {
   });
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [currentView, setCurrentView] = useState("reader"); // 'reader' or 'discover'
+  const [savedArticles, setSavedArticles] = useState([]);
 
   const fetchFeeds = async () => {
     try {
@@ -28,11 +29,21 @@ function MainLayout() {
     }
   };
 
+  const fetchSavedArticles = async () => {
+    try {
+      const response = await apiClient.get("/api/articles/saved");
+      setSavedArticles(response.data);
+    } catch (error) {
+      console.error("Failed to fetch saved articles:", error);
+    }
+  };
+
   // 3. This useEffect will now ONLY run when the `user` object changes
   useEffect(() => {
     // Only fetch feeds if a user is confirmed to be logged in
     if (user) {
       fetchFeeds();
+      fetchSavedArticles();
     }
   }, [user]);
 
@@ -74,8 +85,13 @@ function MainLayout() {
             selectedFeed={selectedFeed}
             selectedArticle={selectedArticle}
             onSelectArticle={handleSelectArticle}
+            savedArticles={savedArticles}
           />
-          <ArticleView selectedArticle={selectedArticle} />
+          <ArticleView
+            selectedArticle={selectedArticle}
+            savedArticles={savedArticles}
+            onRefreshSaved={fetchSavedArticles}
+          />
         </>
       )}
     </div>

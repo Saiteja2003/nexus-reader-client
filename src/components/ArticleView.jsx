@@ -1,10 +1,12 @@
 // src/components/ArticleView.jsx
-import { Sparkles, ArrowUpRight } from "lucide-react";
+import { Sparkles, ArrowUpRight, Star } from "lucide-react";
 import styles from "./ArticleView.module.css";
 import { motion } from "framer-motion";
+import apiClient from "../api";
 
-function ArticleView({ selectedArticle }) {
+function ArticleView({ selectedArticle, savedArticles, onRefreshSaved }) {
   // If no article is selected, show a placeholder message
+
   if (!selectedArticle) {
     return (
       <div className={`${styles.articleView} ${styles.placeholder}`}>
@@ -12,6 +14,39 @@ function ArticleView({ selectedArticle }) {
       </div>
     );
   }
+  // Check if the article is already saved
+  const isSaved = savedArticles.some(
+    (article) => article.link === selectedArticle.link
+  );
+
+  const handleSave = async () => {
+    try {
+      await apiClient.post("/api/articles/save", {
+        title: selectedArticle.title,
+        link: selectedArticle.link,
+        pubDate: selectedArticle.pubDate,
+        content: selectedArticle.content || selectedArticle.contentSnippet,
+        feedTitle:
+          selectedArticle.feedTitle || new URL(selectedArticle.link).hostname,
+      });
+      onRefreshSaved(); // Tell MainLayout to refresh the saved articles list
+    } catch (error) {
+      console.error("Failed to save article:", error);
+      alert("Could not save this article.");
+    }
+  };
+
+  const handleUnsave = async () => {
+    try {
+      await apiClient.delete(
+        `/api/articles/unsave/${encodeURIComponent(selectedArticle.link)}`
+      );
+      onRefreshSaved(); // Refresh the list
+    } catch (error) {
+      console.error("Failed to unsave article:", error);
+      alert("Could not unsave this article.");
+    }
+  };
 
   // A helper function to format the date
   const formatDate = (dateString) => {
@@ -41,6 +76,13 @@ function ArticleView({ selectedArticle }) {
         </div>
 
         <div className={styles.actions}>
+          <button
+            className={styles.actionButton}
+            title={isSaved ? "Unsave Article" : "Save for Later"}
+            onClick={isSaved ? handleUnsave : handleSave}
+          >
+            <Star size={20} fill={isSaved ? "currentColor" : "none"} />
+          </button>
           <a
             href={selectedArticle.link}
             target="_blank"

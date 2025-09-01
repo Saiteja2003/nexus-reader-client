@@ -62,9 +62,7 @@ function Sidebar({
             </div>
             <div
               className={`${styles.navItem} ${
-                currentView === "reader" && selectedFeed?.id === "readLater"
-                  ? styles.active
-                  : ""
+                selectedFeed?.id === "readLater" ? styles.active : ""
               }`}
               onClick={() =>
                 onSelectFeed({ id: "readLater", title: "Read Later" })

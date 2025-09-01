@@ -3,7 +3,10 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function ProtectedRoute({ children }) {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  console.log(
+    `ProtectedRoute Check: isLoading=${isLoading}, user=${JSON.stringify(user)}`
+  );
 
   if (!user) {
     // If user is not logged in, redirect them to the login page

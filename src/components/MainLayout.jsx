@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext"; // 1. Import useAuth
 import Sidebar from "./Sidebar";
 import ArticleList from "./ArticleList";
 import ArticleView from "./ArticleView";
+import DiscoverPage from "../pages/DiscoverPage";
 
 function MainLayout() {
   const { user } = useAuth(); // 2. Get the current user from our AuthContext
@@ -14,6 +15,7 @@ function MainLayout() {
     title: "All Feeds",
   });
   const [selectedArticle, setSelectedArticle] = useState(null);
+  const [currentView, setCurrentView] = useState("reader"); // 'reader' or 'discover'
 
   const fetchFeeds = async () => {
     try {
@@ -44,6 +46,7 @@ function MainLayout() {
   };
 
   const handleSelectFeed = (feed) => {
+    setCurrentView("reader");
     setSelectedFeed(feed);
     setSelectedArticle(null);
   };
@@ -60,13 +63,21 @@ function MainLayout() {
         onSelectFeed={handleSelectFeed}
         onFeedAdded={fetchFeeds}
         onDeleteFeed={handleDeleteFeed}
+        currentView={currentView}
+        onSetView={setCurrentView}
       />
-      <ArticleList
-        selectedFeed={selectedFeed}
-        selectedArticle={selectedArticle}
-        onSelectArticle={handleSelectArticle}
-      />
-      <ArticleView selectedArticle={selectedArticle} />
+      {currentView === "discover" ? (
+        <DiscoverPage onFeedAdded={fetchFeeds} userFeeds={feeds} />
+      ) : (
+        <>
+          <ArticleList
+            selectedFeed={selectedFeed}
+            selectedArticle={selectedArticle}
+            onSelectArticle={handleSelectArticle}
+          />
+          <ArticleView selectedArticle={selectedArticle} />
+        </>
+      )}
     </div>
   );
 }

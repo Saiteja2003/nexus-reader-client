@@ -1,6 +1,14 @@
 // src/components/Sidebar.jsx
 import { useState } from "react";
-import { Folder, Rss, Star, PlusCircle, Trash2, LogOut } from "lucide-react";
+import {
+  Folder,
+  Rss,
+  Star,
+  PlusCircle,
+  Trash2,
+  LogOut,
+  Compass,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import AddFeedModal from "./AddFeedModal";
 import styles from "./Sidebar.module.css";
@@ -11,6 +19,8 @@ function Sidebar({
   onSelectFeed,
   onFeedAdded,
   onDeleteFeed,
+  currentView,
+  onSetView,
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { logout } = useAuth();
@@ -32,14 +42,34 @@ function Sidebar({
           <nav className={styles.navSection}>
             <div
               className={`${styles.navItem} ${
-                selectedFeed?.id === "all" ? styles.active : ""
+                currentView === "discover" ? styles.active : ""
+              }`}
+              onClick={() => onSetView("discover")}
+            >
+              <Compass />
+              <span>Discover</span>
+            </div>
+            <div
+              className={`${styles.navItem} ${
+                currentView === "reader" && selectedFeed?.id === "all"
+                  ? styles.active
+                  : ""
               }`}
               onClick={() => onSelectFeed({ id: "all", title: "All Feeds" })}
             >
               <Rss />
               <span>All Feeds</span>
             </div>
-            <div className={styles.navItem}>
+            <div
+              className={`${styles.navItem} ${
+                currentView === "reader" && selectedFeed?.id === "readLater"
+                  ? styles.active
+                  : ""
+              }`}
+              onClick={() =>
+                onSelectFeed({ id: "readLater", title: "Read Later" })
+              }
+            >
               <Star />
               <span>Read Later</span>
             </div>
@@ -62,7 +92,9 @@ function Sidebar({
                 key={feed._id}
                 onClick={() => onSelectFeed(feed)}
                 className={`${styles.navItem} ${
-                  selectedFeed?._id === feed._id ? styles.active : ""
+                  currentView === "reader" && selectedFeed?._id === feed._id
+                    ? styles.active
+                    : ""
                 }`}
               >
                 {feed.favicon ? (

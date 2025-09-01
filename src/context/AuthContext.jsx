@@ -19,6 +19,10 @@ export function AuthProvider({ children }) {
         "Authorization"
       ] = `Bearer ${storedToken}`;
       setUser({ loggedIn: true });
+    } else {
+      localStorage.removeItem("token");
+      delete apiClient.defaults.headers.common["Authorization"];
+      setUser(null);
     }
     setIsLoading(false); // Finished the initial check
   }, []);

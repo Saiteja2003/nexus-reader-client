@@ -17,10 +17,16 @@ function ArticleList({ selectedFeed, selectedArticle, onSelectArticle }) {
 
     const fetchArticles = async () => {
       setIsLoading(true);
+      setArticles([]); // Clear previous articles when feed changes
       try {
-        const response = await apiClient.get("/api/fetch-articles", {
-          params: { url: selectedFeed.url },
-        });
+        let response;
+        if (selectedFeed.id === "all") {
+          response = await apiClient.get("/api/feeds/articles/all");
+        } else {
+          response = await apiClient.get("/api/fetch-articles", {
+            params: { url: selectedFeed.url },
+          });
+        }
 
         // ✅ NEW: De-duplication logic
         const rawArticles = response.data.items || [];
@@ -36,7 +42,7 @@ function ArticleList({ selectedFeed, selectedArticle, onSelectArticle }) {
           }
         });
 
-        setArticles(uniqueArticles);
+        setArticles(response.data.items || response.data);
       } catch (error) {
         console.error("Failed to fetch articles:", error);
       } finally {
@@ -81,6 +87,9 @@ function ArticleList({ selectedFeed, selectedArticle, onSelectArticle }) {
                   selectedArticle?.link === article.link ? styles.active : ""
                 }`}
               >
+                {selectedFeed.id === "all" && (
+                  <p className={styles.cardSource}>{article.feedTitle}</p>
+                )}
                 <h3 className={styles.cardTitle}>{article.title}</h3>
                 <p className={styles.cardSnippet}>
                   {article.contentSnippet?.substring(0, 100)}...

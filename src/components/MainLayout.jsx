@@ -9,7 +9,10 @@ import ArticleView from "./ArticleView";
 function MainLayout() {
   const { user } = useAuth(); // 2. Get the current user from our AuthContext
   const [feeds, setFeeds] = useState([]);
-  const [selectedFeed, setSelectedFeed] = useState(null);
+  const [selectedFeed, setSelectedFeed] = useState({
+    id: "all",
+    title: "All Feeds",
+  });
   const [selectedArticle, setSelectedArticle] = useState(null);
 
   const fetchFeeds = async () => {

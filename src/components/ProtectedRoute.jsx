@@ -4,10 +4,9 @@ import { useAuth } from "../context/AuthContext";
 
 function ProtectedRoute({ children }) {
   const { user, isLoading } = useAuth();
-  console.log(
-    `ProtectedRoute Check: isLoading=${isLoading}, user=${JSON.stringify(user)}`
-  );
-
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a spinner component
+  }
   if (!user) {
     // If user is not logged in, redirect them to the login page
     return <Navigate to="/login" />;

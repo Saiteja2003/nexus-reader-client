@@ -30,7 +30,12 @@ function Sidebar({
           <header className={styles.header}>NexusReader</header>
 
           <nav className={styles.navSection}>
-            <div className={styles.navItem}>
+            <div
+              className={`${styles.navItem} ${
+                selectedFeed?.id === "all" ? styles.active : ""
+              }`}
+              onClick={() => onSelectFeed({ id: "all", title: "All Feeds" })}
+            >
               <Rss />
               <span>All Feeds</span>
             </div>

@@ -1,13 +1,14 @@
 // src/components/Sidebar.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  Folder,
   Rss,
   Star,
-  PlusCircle,
-  Trash2,
-  LogOut,
   Compass,
+  LogOut,
+  Plus,
+  Trash2,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import AddFeedModal from "./AddFeedModal";
@@ -22,107 +23,149 @@ function Sidebar({
   currentView,
   onSetView,
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { logout } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleDelete = (e, feedId) => {
-    e.stopPropagation();
-    if (window.confirm("Are you sure you want to delete this feed?")) {
-      onDeleteFeed(feedId);
-    }
+  // Read baseline theme token configuration, defaulting to clean dark mode canvas
+  const [theme, setTheme] = useState(
+    localStorage.getItem("nexus-theme") || "dark",
+  );
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("nexus-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
   return (
-    <>
-      <div className={styles.sidebar}>
-        {/* ✅ This wrapper now has a specific class */}
-        <div className={styles.mainContent}>
-          <header className={styles.header}>NexusReader</header>
+    <aside className={styles.sidebar}>
+      <div>
+        <div className={styles.header}>
+          <div className={styles.logo}>
+            <img
+              src="/nr-icon-geometric.svg"
+              alt=""
+              className={styles.logoIcon}
+            />
+            <span>Nexus Reader</span>
+          </div>
+        </div>
 
-          <nav className={styles.navSection}>
-            <div
-              className={`${styles.navItem} ${
-                currentView === "discover" ? styles.active : ""
-              }`}
-              onClick={() => onSetView("discover")}
-            >
-              <Compass />
-              <span>Discover</span>
-            </div>
-            <div
-              className={`${styles.navItem} ${
-                currentView === "reader" && selectedFeed?.id === "all"
-                  ? styles.active
-                  : ""
-              }`}
+        <nav className={styles.nav}>
+          <div className={styles.section}>
+            <button
+              className={`${styles.navItem} ${currentView === "reader" && selectedFeed?.id === "all" ? styles.active : ""}`}
               onClick={() => onSelectFeed({ id: "all", title: "All Feeds" })}
             >
-              <Rss />
+              <Rss size={18} />
               <span>All Feeds</span>
-            </div>
-            <div
-              className={`${styles.navItem} ${
-                selectedFeed?.id === "readLater" ? styles.active : ""
-              }`}
+            </button>
+            <button
+              className={`${styles.navItem} ${currentView === "reader" && selectedFeed?.id === "readLater" ? styles.active : ""}`}
               onClick={() =>
                 onSelectFeed({ id: "readLater", title: "Read Later" })
               }
             >
-              <Star />
+              <Star size={18} />
               <span>Read Later</span>
-            </div>
-          </nav>
+            </button>
+            <button
+              className={`${styles.navItem} ${currentView === "discover" ? styles.active : ""}`}
+              onClick={() => onSetView("discover")}
+            >
+              <Compass size={18} />
+              <span>Discover</span>
+            </button>
+          </div>
 
-          <div className={styles.navSection}>
-            <div className={styles.navHeader}>
-              <h3 className={styles.navTitle}>Your Feeds</h3>
+          <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <h3>Your Feeds</h3>
               <button
-                className={styles.addButton}
+                className={styles.iconButton}
                 onClick={() => setIsModalOpen(true)}
-                title="Add new feed"
+                title="Add Feed"
               >
-                <PlusCircle size={20} />
+                <Plus size={14} />
               </button>
             </div>
+            <div className={styles.feedList}>
+              {feeds.map((feed) => {
+                const feedId = feed.id || feed._id;
+                const isSelected =
+                  currentView === "reader" && selectedFeed?.id === feedId;
 
-            {feeds.map((feed) => (
-              <div
-                key={feed._id}
-                onClick={() => onSelectFeed(feed)}
-                className={`${styles.navItem} ${
-                  currentView === "reader" && selectedFeed?._id === feed._id
-                    ? styles.active
-                    : ""
-                }`}
-              >
-                {feed.favicon ? (
-                  <img
-                    src={feed.favicon}
-                    alt={`${feed.title} favicon`}
-                    className={styles.favicon}
-                  />
-                ) : (
-                  <Folder />
-                )}
-                <span className={styles.feedTitle}>{feed.title}</span>
-                <button
-                  className={styles.deleteButton}
-                  onClick={(e) => handleDelete(e, feed._id)}
-                  title="Delete feed"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            ))}
+                return (
+                  <div
+                    key={feedId}
+                    className={`${styles.feedItemWrapper} ${isSelected ? styles.activeFeed : ""}`}
+                  >
+                    <button
+                      className={styles.feedItem}
+                      onClick={() => onSelectFeed({ ...feed, id: feedId })}
+                    >
+                      {feed.favicon ? (
+                        <img
+                          src={feed.favicon}
+                          alt=""
+                          className={styles.feedFavicon}
+                          loading="lazy"
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            if (e.target.nextSibling)
+                              e.target.nextSibling.style.display = "flex";
+                          }}
+                        />
+                      ) : null}
+                      <span
+                        className={styles.feedFaviconFallback}
+                        style={{ display: feed.favicon ? "none" : "flex" }}
+                      >
+                        {feed.title?.charAt(0) || "F"}
+                      </span>
+                      <span className={styles.feedTitle}>{feed.title}</span>
+                    </button>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteFeed(feedId);
+                      }}
+                      title="Remove Feed"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </nav>
+      </div>
 
-        {/* ✅ The logout section now has a specific "footer" class */}
+      <div className={styles.footerGroup}>
+        {/* Theme Toggle Button Control Option */}
+        <button
+          className={styles.themeToggle}
+          onClick={toggleTheme}
+          title={
+            theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"
+          }
+        >
+          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          <span>
+            {theme === "dark" ? "Light Appearance" : "Dark Appearance"}
+          </span>
+        </button>
+
         <div className={styles.footer}>
-          <div className={styles.navItem} onClick={logout}>
-            <LogOut />
-            <span>Logout</span>
-          </div>
+          <button className={styles.logoutButton} onClick={logout}>
+            <LogOut size={18} />
+            <span>Log Out</span>
+          </button>
         </div>
       </div>
 
@@ -131,7 +174,7 @@ function Sidebar({
         onClose={() => setIsModalOpen(false)}
         onFeedAdded={onFeedAdded}
       />
-    </>
+    </aside>
   );
 }
 

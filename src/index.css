@@ -1,61 +1,112 @@
 /* src/index.css */
-/* --- 1. FONT IMPORT --- */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600&display=swap");
-@import "react-loading-skeleton/dist/skeleton.css";
-/* --- 2. DESIGN SYSTEM (CSS VARIABLES) --- */
-/* Palette 1: Academic Ink */
-/* Palette 2: Nordic Slate */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
 :root {
-  /* Color Palette - NEW GREEN THEME */
-  --color-background: #f8f9f8; /* A slightly green-tinted off-white */
-  --color-surface: #ffffff;
-  --color-border: #e8eae8;
-  --color-text-primary: #121212;
-  --color-text-secondary: #5a5a5a;
-  --color-accent: #386641; /* A sophisticated, earthy sage green */
-  --color-accent-hover: #2a4c30; /* A darker shade for hover states */
+  /* Premium Earthy Sage Accent Spectrum */
+  --color-accent: #386641;
+  --color-accent-hover: #2a4c30;
 
-  /* Typography */
-  --font-sans: "Inter", sans-serif;
-  --font-serif: "Lora", serif;
-  /* Spacing & Radii */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --border-radius: 8px;
+  /* Editorial Light Mode Palette - Ultra Premium White/Slate Workspace */
+  --bg-app: #f4f5f6;
+  --bg-sidebar: #ffffff; /* Clean White Sidebar Panel */
+  --bg-card: #ffffff; /* Pristine Card Engine Canvas */
+  --bg-input: #f8f9fa;
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --text-main: #111418; /* Rich Charcoal Obsidian for maximum visibility */
+  --text-muted: #4b5563; /* High contrast legible description gray */
+  --text-light: #6b7280; /* Clean caption slate */
+  --bg-active-link: rgba(56, 102, 65, 0.08);
+  --bg-card-hover: rgba(0, 0, 0, 0.02);
+  --shadow-overlay: rgba(0, 0, 0, 0.06);
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  /* External HTML Element Sanitizers */
+  --rss-text-override: #111418 !important;
+  --rss-bg-override: #f8f9fa !important;
+  --img-mix-blend: multiply;
+  --img-border-box: rgba(0, 0, 0, 0.04);
 }
 
-/* --- 3. GLOBAL STYLES & RESETS --- */
+[data-theme="dark"] {
+  /* Dynamic Dark Mode Palette - Studio Pitch Slate */
+  --bg-app: #0b0d0f;
+  --bg-sidebar: #111418;
+  --bg-card: #15191e;
+  --bg-input: #1a1f26;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --text-light: #6b7280;
+  --bg-active-link: rgba(56, 102, 65, 0.15);
+  --bg-card-hover: rgba(255, 255, 255, 0.015);
+  --shadow-overlay: rgba(0, 0, 0, 0.4);
+
+  /* External HTML Element Sanitizers */
+  --rss-text-override: #f3f4f6 !important;
+  --rss-bg-override: #1a1f26 !important;
+  --img-mix-blend: normal;
+  --img-border-box: rgba(255, 255, 255, 0.06);
+}
+
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+  font-family:
+    "Plus Jakarta Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.15s ease;
 }
 
 body {
-  margin: 0;
-  font-family: var(--font-sans);
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-h1,
-h2,
-h3 {
-  font-family: var(--font-serif);
-  font-weight: 600;
-}
-
-/* --- 4. MAIN LAYOUT GRID --- */
-.app-container {
-  display: grid;
-  grid-template-columns: 280px 380px 1fr; /* Slightly wider columns */
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  overflow: hidden;
   height: 100vh;
-  overflow: hidden; /* Prevent body-level scrolling */
+  width: 100vw;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-app);
+  overflow: hidden;
+}
+
+/* Minimalist Scrollbar Overhaul */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-light);
+}
+
+button,
+input {
+  outline: none;
+  border: none;
+  background: none;
 }

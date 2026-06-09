@@ -1,55 +1,98 @@
 /* src/components/AddFeedModal.module.css */
+
+/* THE FIX: Isolate overlay and blur background text lines completely */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10000; /* Force overlay on top of all column splits */
+  padding: 1.5rem;
 }
 
 .modal {
-  background: var(--color-surface);
-  padding: var(--spacing-xl);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1.75rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 460px;
+  box-shadow: 0 20px 40px var(--shadow-overlay);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .modal h2 {
-  margin-top: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.modal p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.45;
 }
 
 .input {
   width: 100%;
-  padding: var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  font-size: 1rem;
-  margin-top: var(--spacing-md);
+  padding: 0.75rem 0.85rem;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  color: var(--text-main);
+  font-size: 0.9rem;
+  transition: border-color 0.15s ease;
+}
+
+.input:focus {
+  border-color: var(--color-accent);
 }
 
 .actions {
-  margin-top: var(--spacing-lg);
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-md);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .button {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius);
-  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
+/* Default Cancel Button Design */
+.button:not(.submitButton) {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.button:not(.submitButton):hover {
+  background-color: var(--bg-app);
+  color: var(--text-main);
+}
+
+/* Sophisticated Sage Green Action Implementation */
 .submitButton {
   background-color: var(--color-accent);
-  color: white;
+  color: #ffffff;
+}
+
+.submitButton:hover {
+  background-color: var(--color-accent-hover);
+  box-shadow: 0 4px 12px rgba(56, 102, 65, 0.2);
 }

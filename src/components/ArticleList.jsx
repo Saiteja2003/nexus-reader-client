@@ -25,9 +25,8 @@ function EmptyState({ type }) {
   );
 }
 
-// This component is now a "dumb" component. It just receives props and displays them.
 function ArticleList({
-  articles = [], // Default value prevents crashes
+  articles = [],
   isLoading,
   loadingTitle,
   selectedFeed,
@@ -41,12 +40,13 @@ function ArticleList({
           {isLoading
             ? loadingTitle
             : selectedFeed
-            ? selectedFeed.title
-            : "Articles"}
+              ? selectedFeed.title
+              : "Articles"}
         </h2>
       </header>
 
-      <div>
+      {/* THE FIX: Use the scroller class here to trigger the scrollbar */}
+      <div className={styles.scroller}>
         {isLoading && articles.length === 0 ? (
           Array.from({ length: 10 }).map((_, index) => (
             <div className={styles.articleCard} key={index}>

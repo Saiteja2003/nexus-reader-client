@@ -2,11 +2,10 @@
 import { Sparkles, ArrowUpRight, Star } from "lucide-react";
 import styles from "./ArticleView.module.css";
 import { motion } from "framer-motion";
-import apiClient from "../api";
+// IMPORT the new Supabase named exports
+import { saveArticle, unsaveArticle } from "../api";
 
 function ArticleView({ selectedArticle, savedArticles, onRefreshSaved }) {
-  // If no article is selected, show a placeholder message
-
   if (!selectedArticle) {
     return (
       <div className={`${styles.articleView} ${styles.placeholder}`}>
@@ -14,14 +13,15 @@ function ArticleView({ selectedArticle, savedArticles, onRefreshSaved }) {
       </div>
     );
   }
-  // Check if the article is already saved
+
   const isSaved = savedArticles.some(
-    (article) => article.link === selectedArticle.link
+    (article) => article.link === selectedArticle.link,
   );
 
   const handleSave = async () => {
     try {
-      await apiClient.post("/api/articles/save", {
+      // Use the new Supabase wrapper
+      await saveArticle({
         title: selectedArticle.title,
         link: selectedArticle.link,
         pubDate: selectedArticle.pubDate,
@@ -29,26 +29,24 @@ function ArticleView({ selectedArticle, savedArticles, onRefreshSaved }) {
         feedTitle:
           selectedArticle.feedTitle || new URL(selectedArticle.link).hostname,
       });
-      onRefreshSaved(); // Tell MainLayout to refresh the saved articles list
+      onRefreshSaved();
     } catch (error) {
       console.error("Failed to save article:", error);
-      alert("Could not save this article.");
+      alert(error.message || "Could not save this article.");
     }
   };
 
   const handleUnsave = async () => {
     try {
-      await apiClient.delete(
-        `/api/articles/unsave/${encodeURIComponent(selectedArticle.link)}`
-      );
-      onRefreshSaved(); // Refresh the list
+      // Use the new Supabase wrapper
+      await unsaveArticle(selectedArticle.link);
+      onRefreshSaved();
     } catch (error) {
       console.error("Failed to unsave article:", error);
       alert("Could not unsave this article.");
     }
   };
 
-  // A helper function to format the date
   const formatDate = (dateString) => {
     if (!dateString) return "";
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -60,11 +58,11 @@ function ArticleView({ selectedArticle, savedArticles, onRefreshSaved }) {
 
   return (
     <motion.article
-      key={selectedArticle.guid || selectedArticle.link} // Add key to re-trigger animation
+      key={selectedArticle.guid || selectedArticle.link}
       className={styles.articleView}
-      initial={{ opacity: 0, y: 20 }} // Start invisible and slightly down
-      animate={{ opacity: 1, y: 0 }} // Animate to fully visible and original position
-      transition={{ duration: 0.5 }} // Control the speed of the animation
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
       <header className={styles.header}>
         <div>
@@ -98,12 +96,6 @@ function ArticleView({ selectedArticle, savedArticles, onRefreshSaved }) {
         </div>
       </header>
 
-      {/* IMPORTANT: Rendering HTML Content Safely
-        RSS feeds often contain HTML in their content. To render it, we use
-        `dangerouslySetInnerHTML`. This is safe HERE because we are displaying
-        content from trusted RSS feeds. We would NEVER use this for user-submitted content
-        as it could lead to security vulnerabilities (XSS attacks).
-      */}
       <div
         className={styles.content}
         dangerouslySetInnerHTML={{

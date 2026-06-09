@@ -1,8 +1,8 @@
 // src/components/AddFeedModal.jsx
 import { useState } from "react";
-import axios from "axios";
 import styles from "./AddFeedModal.module.css";
-import apiClient from "../api"; // Import the configured axios instance
+// IMPORT the new Supabase function instead of apiClient
+import { addFeed } from "../api";
 
 function AddFeedModal({ isOpen, onClose, onFeedAdded }) {
   const [url, setUrl] = useState("");
@@ -16,13 +16,15 @@ function AddFeedModal({ isOpen, onClose, onFeedAdded }) {
     if (!url) return;
 
     try {
-      // Make the POST request to our backend
-      await apiClient.post("/api/feeds", { url });
+      // Use the new Supabase wrapper function
+      await addFeed(url);
       onFeedAdded(); // Tell the parent component to refresh the feed list
       onClose(); // Close the modal
     } catch (error) {
       console.error("Failed to add feed:", error);
-      alert("Failed to add feed. Check the URL and try again.");
+      alert(
+        error.message || "Failed to add feed. Check the URL and try again.",
+      );
     }
   };
 

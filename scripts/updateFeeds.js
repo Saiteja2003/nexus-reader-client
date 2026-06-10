@@ -1,84 +1,69 @@
+import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
-import path from "path";
 import { fileURLToPath } from "url";
+import path from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const dataPath = path.join(__dirname, "../src/data/discoverFeeds.js");
+// Supabase Setup
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
-async function updateFeeds() {
-  console.log("Starting Self-Healing Feed Engine...");
-
-  // Dynamically import the current feeds
-  const { DISCOVER_CATEGORIES } = await import("file://" + dataPath);
-
-  let totalProcessed = 0;
-  let totalDeleted = 0;
-
-  const updatedCategories = await Promise.all(
-    DISCOVER_CATEGORIES.map(async (category) => {
-      const activeFeeds = [];
-
-      for (const feed of category.feeds) {
-        try {
-          const response = await fetch(feed.url, {
-            signal: AbortSignal.timeout(8000),
-          });
-
-          // 1. THE PURGE: If the feed is dead, skip it (effectively deleting it)
-          if (!response.ok) {
-            console.log(`[DELETED] Unreachable feed: ${feed.title}`);
-            totalDeleted++;
-            continue;
-          }
-
-          const xmlText = await response.text();
-
-          // 2. THE FRESHNESS: Extract the title of the very first <item> (the newest article)
-          const itemMatch =
-            xmlText.match(
-              /<item>[\s\S]*?<title><!\[CDATA\[(.*?)\]\]><\/title>[\s\S]*?<\/item>/,
-            ) ||
-            xmlText.match(
-              /<item>[\s\S]*?<title>(.*?)<\/title>[\s\S]*?<\/item>/,
-            ) ||
-            xmlText.match(
-              /<entry>[\s\S]*?<title>(.*?)<\/title>[\s\S]*?<\/entry>/,
-            ); // Fallback for Atom feeds
-
-          const latestHeadline = itemMatch
-            ? itemMatch[1].trim()
-            : "New updates available";
-
-          // 3. Keep the feed and update its metadata
-          activeFeeds.push({
-            ...feed,
-            latestHeadline: latestHeadline,
-            lastVerified: new Date().toISOString(),
-          });
-
-          totalProcessed++;
-        } catch (error) {
-          console.log(`[DELETED] Timeout/Error on feed: ${feed.title}`);
-          totalDeleted++;
-        }
-      }
-
-      // Return the category with ONLY the active, surviving feeds
-      return { ...category, feeds: activeFeeds };
-    }),
-  );
-
-  // Rebuild the JavaScript file content
-  const fileContent = `// Automatically cleaned and enriched by GitHub Actions
-export const DISCOVER_CATEGORIES = ${JSON.stringify(updatedCategories, null, 2)};
-`;
-
-  // Overwrite the file with the clean, updated data
-  fs.writeFileSync(dataPath, fileContent, "utf8");
-  console.log(
-    `Engine Complete: Verified ${totalProcessed} feeds. Purged ${totalDeleted} dead feeds.`,
-  );
+if (!supabaseUrl || !supabaseKey) {
+  console.error("Missing Supabase environment variables.");
+  process.exit(1);
 }
 
-updateFeeds().catch(console.error);
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+async function runEngine() {
+  console.log("Starting Live Database Verification Engine...");
+
+  // 1. Fetch all feeds from Supabase
+  const { data: feeds, error } = await supabase
+    .from("curated_feeds")
+    .select("*");
+
+  if (error) {
+    console.error("Error fetching from Supabase:", error);
+    process.exit(1);
+  }
+
+  let totalProcessed = 0;
+  let totalPurged = 0;
+
+  // 2. Ping each URL
+  for (const feed of feeds) {
+    try {
+      const response = await fetch(feed.url, {
+        method: "HEAD",
+        signal: AbortSignal.timeout(5000),
+      });
+
+      if (!response.ok) {
+        console.log(`[PURGE] Dead link detected: ${feed.title}`);
+        await supabase.from("curated_feeds").delete().eq("id", feed.id);
+        totalPurged++;
+      }
+      totalProcessed++;
+    } catch (e) {
+      console.log(`[PURGE] Timeout on: ${feed.title}`);
+      await supabase.from("curated_feeds").delete().eq("id", feed.id);
+      totalPurged++;
+    }
+  }
+
+  console.log(
+    `Verification complete. Processed: ${totalProcessed}, Purged: ${totalPurged}`,
+  );
+
+  // 3. The Streak Preserver: Write to a local log file
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const logPath = path.join(__dirname, "../engine-log.txt");
+
+  const logMessage = `Engine Run: ${new Date().toISOString()} | Active Feeds: ${totalProcessed - totalPurged} | Purged: ${totalPurged}\n`;
+
+  // Overwrite the file to ensure the timestamp changes, triggering a Git commit
+  fs.writeFileSync(logPath, logMessage, "utf8");
+  console.log("Log updated. Ready for GitHub push.");
+}
+
+runEngine().catch(console.error);

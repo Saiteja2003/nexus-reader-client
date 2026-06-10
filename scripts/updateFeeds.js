@@ -12,7 +12,14 @@ if (!supabaseUrl || !supabaseKey) {
   process.exit(1);
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: { persistSession: false },
+  realtime: {
+    transport: {
+      // Passing an empty object trick forces it to bypass looking for native WebSockets
+    },
+  },
+});
 
 async function runEngine() {
   console.log("Starting Live Database Verification Engine...");

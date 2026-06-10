@@ -1,0 +1,40 @@
+name: Daily Feed Verification
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every day
+    - cron: "0 0 * * *"
+  workflow_dispatch: # Allows you to run it manually from the GitHub UI
+
+jobs:
+  update-feeds:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to allow the action to push commits
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run Feed Verification Script
+        run: node scripts/updateFeeds.js
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Check if there are any changes to commit
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add src/data/discoverFeeds.js
+            git commit -m "chore: automated daily verification of rss feeds"
+            git push
+            echo "Feeds updated and changes pushed."
+          else
+            echo "No changes detected."
+          fi

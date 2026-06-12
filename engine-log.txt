@@ -1,1 +1,1 @@
-Engine Run: 2026-06-11T02:42:40.530Z | Active Feeds: 17 | Purged: 0
+Engine Run: 2026-06-12T02:38:38.373Z | Active Feeds: 15 | Purged: 1
